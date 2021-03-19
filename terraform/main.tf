@@ -117,16 +117,16 @@ resource "google_compute_address" "default" {
 # Virtual machines #
 ####################
 
-resource "google_compute_instance" "control-plane" {
+resource "google_compute_instance" "machines" {
   
   count = 3
   
-  name         = "master-${count.index}"
-  machine_type = "e2-small"
+  name         = "machine-${count.index}"
+  machine_type = "e2-medium"
   zone = var.gce_zone
   can_ip_forward = true
 
-  tags = ["master", "controller", "cluster1", "kubernetes"]
+  tags = ["master","worker" ,"controller", "cluster1", "kubernetes"]
 
   boot_disk {
     initialize_params {
@@ -156,44 +156,44 @@ resource "google_compute_instance" "control-plane" {
 
 }
 
-resource "google_compute_instance" "workers" {
+# resource "google_compute_instance" "workers" {
   
-  count = 3
+#   count = 3
   
-  name         = "worker-${count.index}"
-  machine_type = "e2-small"
-  zone = var.gce_zone
-  can_ip_forward = true
+#   name         = "worker-${count.index}"
+#   machine_type = "e2-small"
+#   zone = var.gce_zone
+#   can_ip_forward = true
 
-  tags = [ "worker", "cluster1", "kubernetes" ]
+#   tags = [ "worker", "cluster1", "kubernetes" ]
 
-  boot_disk {
-    initialize_params {
-      image = "ubuntu-os-cloud/ubuntu-1804-lts"
-    }
-  }
-
-#   scratch_disk {
+#   boot_disk {
+#     initialize_params {
+#       image = "ubuntu-os-cloud/ubuntu-1804-lts"
+#     }
 #   }
 
-  network_interface {
-    subnetwork = google_compute_subnetwork.default.name
-    network_ip = "10.240.0.2${count.index}"
-    access_config {
-    }  
-  }
+# #   scratch_disk {
+# #   }
 
-  service_account {
-    scopes = ["compute-rw","storage-ro","service-management","service-control","logging-write","monitoring"]
-  }
+#   network_interface {
+#     subnetwork = google_compute_subnetwork.default.name
+#     network_ip = "10.240.0.2${count.index}"
+#     access_config {
+#     }  
+#   }
 
-  metadata = {
-    sshKeys = "${var.ssh_user}:${file(var.ssh_key)}"
-  }
+#   service_account {
+#     scopes = ["compute-rw","storage-ro","service-management","service-control","logging-write","monitoring"]
+#   }
 
-  metadata_startup_script = "apt-get install -y python"
+#   metadata = {
+#     sshKeys = "${var.ssh_user}:${file(var.ssh_key)}"
+#   }
 
-}
+#   metadata_startup_script = "apt-get install -y python"
+
+# }
 
 
 
