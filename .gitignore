@@ -1,5 +1,5 @@
 *adc.json
-*.terraform
+*.terraform*
 *.tfstate*
 *inventory.cfg
 *.retry
