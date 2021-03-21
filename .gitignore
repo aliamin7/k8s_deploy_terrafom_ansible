@@ -8,3 +8,4 @@
 *.kubeconfig
 *encryption-config.yaml
 *inv.sh
+*.DS_Store
